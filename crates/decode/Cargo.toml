@@ -1,0 +1,17 @@
+# INVARIANT: this crate must contain no I/O dependencies (no HTTP client,
+# no async runtime, no filesystem crates). "Decode does no I/O" is enforced
+# by this dependency list; CI asserts it. See ARCHITECTURE.md.
+[package]
+name = "cardano-mcp-decode"
+description = "Chain-data parsing and narration for cardano-mcp. No I/O by construction."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[dependencies]
+
+[lints]
+workspace = true

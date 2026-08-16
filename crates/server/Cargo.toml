@@ -1,0 +1,17 @@
+[package]
+name = "cardano-mcp"
+description = "Cardano MCP server: decoded chain intelligence for AI agents."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[dependencies]
+cardano-mcp-decode = { path = "../decode" }
+cardano-mcp-sanitize = { path = "../sanitize" }
+cardano-mcp-provider = { path = "../provider" }
+
+[lints]
+workspace = true

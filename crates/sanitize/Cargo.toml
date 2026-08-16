@@ -1,0 +1,16 @@
+# INVARIANT: the only exit path for chain-sourced content. No I/O
+# dependencies. See ARCHITECTURE.md and THREAT_MODEL.md (F1).
+[package]
+name = "cardano-mcp-sanitize"
+description = "Output boundary for cardano-mcp: caps, stripping, delimiting of chain-sourced content."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[dependencies]
+
+[lints]
+workspace = true
