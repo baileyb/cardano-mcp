@@ -111,32 +111,34 @@ and explain transactions but cannot authorize them.
    below). Nothing skips this step.
 6. **Respond** — MCP content back to the client.
 
-## Module layout
+## Crate layout
 
-Single Cargo package, split lib/bin so logic is testable and fuzzable without
-the server harness:
+A Cargo workspace of small crates, so the architecture boundaries are
+enforced by the dependency graph rather than by review discipline:
 
 ```
 cardano-mcp/
-  src/
-    main.rs          # rmcp server wiring, transport, config load
-    tools/           # one module per MCP tool; thin: orchestrate + format
-    provider/        # ChainProvider trait; blockfrost.rs (HTTP impl)
-                     #   dolos is the same API shape -> same impl, different base URL
-                     #   utxorpc.rs (gRPC) possible later, behind the same trait
-    decode/          # Pallas-based parsing, CIP-25/68 resolution, narrators
-    sanitize/        # the output boundary: caps, stripping, delimiting
-    config.rs        # network (mainnet/preprod/preview), provider URL, key
-  fuzz/              # cargo-fuzz targets for decode/ and sanitize/
+  crates/
+    decode/          # Pallas-based parsing, CIP-25/68 resolution, narrators.
+                     #   Cargo.toml contains no I/O dependencies — "decode
+                     #   does no I/O" is compile-time fact, not policy
+    sanitize/        # the output boundary: caps, stripping, delimiting.
+                     #   Safe output types are constructible only here
+    provider/        # ChainProvider trait; blockfrost HTTP impl
+                     #   (dolos is the same API shape -> same impl,
+                     #   different base URL; utxorpc gRPC possible later)
+    server/          # binary: rmcp wiring, tools, transport, config
+  fuzz/              # cargo-fuzz targets; depend on decode/sanitize only
   tests/             # golden tests: recorded fixtures -> expected renderings
 ```
 
-Guiding split: `tools/` may do I/O but no parsing; `decode/` parses but does
-no I/O; `sanitize/` is the only path to the outside. `#![forbid(unsafe_code)]`
-at the crate root.
+Guiding split: `server` tools may do I/O but never parse chain data;
+`decode` parses but cannot do I/O (the dependency is absent); `sanitize` is
+the only path to the outside. CI asserts each crate's dependency allowlist.
+`#![forbid(unsafe_code)]` at every crate root.
 
 The `ChainProvider` trait is intentionally narrow — the handful of fetches the
-tools actually need, not a general Cardano client. This is what keeps
+tools need, not a general Cardano client. This is what keeps
 "Blockfrost today, Dolos tomorrow" a config change: Dolos serves a
 Blockfrost-compatible API, so the primary backend swap is the base URL; any
 endpoint gaps get compatibility shims inside the provider, never in tools.
