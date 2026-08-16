@@ -59,7 +59,7 @@ For every registered document:
 
 ## Report format
 
-```
+```text
 DOCS REVIEW — <mode>
 Errors (block):
   <file>:<line> — <rule> — <finding> — <proposed fix>

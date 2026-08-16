@@ -116,7 +116,7 @@ and explain transactions but cannot authorize them.
 A Cargo workspace of small crates, so the architecture boundaries are
 enforced by the dependency graph rather than by review discipline:
 
-```
+```text
 cardano-mcp/
   crates/
     decode/          # Pallas-based parsing, CIP-25/68 resolution, narrators.
