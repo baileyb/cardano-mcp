@@ -19,6 +19,9 @@ allow = [
 [bans]
 multiple-versions = "warn"
 wildcards = "deny"
+# Workspace-internal path dependencies have no version by design; this
+# permits them (private crates only) while still denying registry wildcards.
+allow-wildcard-paths = true
 
 [sources]
 unknown-registry = "deny"
