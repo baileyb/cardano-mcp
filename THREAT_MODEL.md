@@ -86,18 +86,18 @@ flow straight into an LLM's context via any naive decoder:
   tampering stays visible rather than vanishing. The data-delimiter
   characters themselves are neutralized too, so quoted values cannot
   break out of their markers. Render non-UTF-8 asset names as hex, never
-  as lossy text. (Unicode normalization to a canonical form is Planned:,
-  not yet implemented.)
+  as lossy text. (Planned: Unicode normalization to a canonical form.)
 - **Delimit**: every chain-sourced string is emitted inside explicit
   data markers, so hostile text arrives quoted as data, not as prose.
-- **Defang URLs**: URLs found in chain data are presented as
-  non-actionable text (per CIP-20's own recommendation), never as links,
-  and never fetched (F3).
+- **URLs are never fetched** (F3): the server performs no off-chain
+  requests, so a URL embedded in chain data cannot trigger one. (Planned:
+  when a tool surfaces a URL field, render it as non-actionable text per
+  CIP-20's recommendation.)
 - **Never let names claim identity**: token legitimacy is policy-ID based;
   responses carry the policy ID and CIP-14 fingerprint alongside any
   human-readable name, with the name explicitly labeled as unverified
   attacker-writable data.
-- **Structured output** (Planned:, lands with the MCP transport): tools
+- **Structured output** (Planned, lands with the MCP transport): tools
   return typed `structuredContent` with strict schemas rather than
   free-text blobs, so hosts can post-process and pass minimal fields to
   the model.

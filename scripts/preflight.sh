@@ -38,6 +38,9 @@ cargo clippy --workspace --all-targets --locked
 step "cargo test (locked)"
 cargo test --workspace --locked --quiet
 
+step "fuzz targets typecheck (drift guard)"
+cargo check --manifest-path fuzz/Cargo.toml --bins
+
 step "crate dependency boundaries (decode/sanitize: no I/O deps)"
 for crate in decode sanitize; do
   deps=$(sed -n '/^\[dependencies\]/,/^\[/p' "crates/$crate/Cargo.toml" | grep -E '^[a-zA-Z0-9_-]+\s*=' || true)

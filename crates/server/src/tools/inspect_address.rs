@@ -625,6 +625,15 @@ mod tests {
             }),
             "legacy Byron-era address"
         );
+        // Pin the "unrecognized-network" label on a non-Byron kind (Byron
+        // discards the network label).
+        assert_eq!(
+            describe_kind(&AddressReport {
+                network: NetworkKind::Other,
+                kind: AddressKind::Stake { is_script: false },
+            }),
+            "unrecognized-network stake (reward) address, key-controlled"
+        );
     }
 
     #[tokio::test]
