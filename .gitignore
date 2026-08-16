@@ -1,0 +1,6 @@
+# Local-only Claude instructions — operational/owner context, never published
+CLAUDE.local.md
+# Secrets
+.env
+# Build
+/target
