@@ -33,7 +33,7 @@ Breaking the trifecta is the host's job; not contributing legs to it is ours.
 ## Assets
 
 | Asset | Where | Notes |
-|---|---|---|
+| --- | --- | --- |
 | Provider API key | Env var / deployment secret | Only secret in the default build. Must never appear in logs, errors, or tool output |
 | Host network position | Wherever the server runs | An SSRF-capable server is a beachhead into its network; see F3 |
 | Downstream agent context | The consuming LLM | Shared asset: we sanitize what enters it, we cannot control what the model does |
@@ -48,7 +48,7 @@ before it ships.
 ## Trust levels
 
 | Source | Trust | Rationale |
-|---|---|---|
+| --- | --- | --- |
 | On-chain data (metadata, asset names, datums, governance content) | **Hostile** | Anyone can write it for pennies; it is authored input aimed at whoever decodes it |
 | Off-chain documents referenced from chain (pool metadata JSON, governance anchors, NFT media URLs) | **Hostile, and fetching is itself dangerous** | URLs are attacker-controlled; the on-chain hash gates display integrity, not the act of fetching |
 | Data provider (Blockfrost/Dolos API) | **Semi-trusted** | Responses are unsigned JSON; a compromised provider can fabricate anything. See provider tiers below |

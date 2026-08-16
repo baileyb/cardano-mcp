@@ -74,7 +74,7 @@ Two things are deliberately *outside* the box:
 ## Tool surface (Tier 1 — read-only)
 
 | Tool | Question it answers |
-|------|--------------------|
+| --- | --- |
 | `search` | "What is this string?" — address, tx hash, asset, policy, pool ticker, or handle; routes to the right inspector |
 | `inspect_address` | Balance, holdings with resolved names, staking/delegation state, recent activity summary |
 | `inspect_transaction` | Plain-English narrative: who paid whom, scripts executed, datums decoded, fees, metadata |

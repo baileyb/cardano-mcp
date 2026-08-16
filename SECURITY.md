@@ -2,7 +2,7 @@
 
 ## Reporting a vulnerability
 
-**Please use [GitHub Private Vulnerability Reporting](../../security/advisories/new)**
+**Please use [GitHub Private Vulnerability Reporting](https://github.com/baileyb/cardano-mcp/security/advisories/new)**
 (the "Report a vulnerability" button on this repository's Security tab). This
 keeps the report confidential, gives us a private workspace to develop a fix,
 and lets a CVE be issued through GitHub when the advisory is published.

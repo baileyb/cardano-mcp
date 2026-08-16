@@ -71,7 +71,7 @@ typos, fail-closed) and by the `docs-review` skill.
 ### Document registry
 
 | Document | Question it answers |
-|---|---|
+| --- | --- |
 | `README.md` | What is this, and how do I run it in five minutes? |
 | `ARCHITECTURE.md` | How is the system built, and why this shape? |
 | `SECURITY.md` | How do I report a vulnerability, and what is in scope? |
@@ -81,7 +81,7 @@ typos, fail-closed) and by the `docs-review` skill.
 ### Terminology
 
 | Term | Meaning | Never |
-|---|---|---|
+| --- | --- | --- |
 | provider | The chain-data backend behind the `ChainProvider` trait | backend, upstream service, data source |
 | tool | An MCP tool exposed by this server | endpoint, command, function |
 | sanitize boundary | The single output path for chain-sourced content | sanitizer, filter layer |
