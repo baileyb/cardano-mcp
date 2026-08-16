@@ -76,6 +76,8 @@ typos, fail-closed) and by the `docs-review` skill.
 | `ARCHITECTURE.md` | How is the system built, and why this shape? |
 | `SECURITY.md` | How do I report a vulnerability, and what is in scope? |
 | `THREAT_MODEL.md` | What does this defend against, and what does it explicitly not? |
+| `CONTRIBUTING.md` | How do I contribute a change that will be accepted? |
+| `CODE_OF_CONDUCT.md` | What behavior is expected in project spaces? |
 | `CLAUDE.md` | What rules govern work in this repo? |
 
 ### Terminology
