@@ -12,6 +12,16 @@ publish = false
 cardano-mcp-decode = { path = "../decode" }
 cardano-mcp-sanitize = { path = "../sanitize" }
 cardano-mcp-provider = { path = "../provider" }
+# Async runtime for the provider's HTTP calls; single-threaded is enough.
+tokio = { version = "1.53.1", features = ["rt", "macros"] }
+# Error context at the binary edge only (library crates use thiserror).
+anyhow = "1.0"
+# Typed tool errors.
+thiserror = "2.0.20"
+
+[dev-dependencies]
+# Hex-encode hostile fixture bytes in tests.
+hex = "0.4.3"
 
 [lints]
 workspace = true

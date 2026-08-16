@@ -79,11 +79,15 @@ flow straight into an LLM's context via any naive decoder:
 
 **Defenses (the sanitize boundary — every output path, no exceptions):**
 
-- Strip or make visible all control characters and ANSI escape sequences
-  (escape-sequence smuggling into terminals/contexts is a demonstrated MCP
-  attack class).
-- Normalize unicode; strip zero-width and bidirectional-override characters;
-  render non-UTF-8 asset names as hex, never as lossy text.
+- Neutralize, visibly, every character whose Unicode category is
+  control, invisible-format (zero-width, bidirectional controls, the
+  "tag" block used for human-invisible text smuggling), line/paragraph
+  separator, private-use, or unassigned — replaced with U+FFFD so
+  tampering stays visible rather than vanishing. The data-delimiter
+  characters themselves are neutralized too, so quoted values cannot
+  break out of their markers. Render non-UTF-8 asset names as hex, never
+  as lossy text. (Unicode normalization to a canonical form is Planned:,
+  not yet implemented.)
 - **Delimit**: every chain-sourced string is emitted inside explicit
   data markers, so hostile text arrives quoted as data, not as prose.
 - **Defang URLs**: URLs found in chain data are presented as
@@ -93,9 +97,10 @@ flow straight into an LLM's context via any naive decoder:
   responses carry the policy ID and CIP-14 fingerprint alongside any
   human-readable name, with the name explicitly labeled as unverified
   attacker-writable data.
-- **Structured output**: tools return typed `structuredContent` with strict
-  schemas rather than free-text blobs, so hosts can post-process and pass
-  minimal fields to the model.
+- **Structured output** (Planned:, lands with the MCP transport): tools
+  return typed `structuredContent` with strict schemas rather than
+  free-text blobs, so hosts can post-process and pass minimal fields to
+  the model.
 - Per-field length caps and a per-response size budget (context flooding is
   an attack).
 

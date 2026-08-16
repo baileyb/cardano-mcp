@@ -12,6 +12,20 @@ repository.workspace = true
 publish = false
 
 [dependencies]
+# Pure Cardano primitives (address parsing, blake2b) — the workspace's
+# foundational chain library; no I/O.
+pallas-addresses = "1.1.1"
+pallas-crypto = "1.1.1"
+# CIP-14 fingerprints are bech32-encoded; pure encoding crate.
+bech32 = "0.12.0"
+# Hex encode/decode for policy IDs and asset names; pure.
+hex = "0.4.3"
+# Typed error derives; no runtime.
+thiserror = "2.0.20"
+
+[dev-dependencies]
+# Property testing for round-trip invariants (repo testing convention).
+proptest = "1.11.0"
 
 [lints]
 workspace = true

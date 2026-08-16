@@ -11,6 +11,10 @@ repository.workspace = true
 publish = false
 
 [dependencies]
+# Unicode General_Category lookup for the category-based deny predicate
+# (rejects Cc/Cf/Zl/Zp: controls, invisible format chars incl. tag
+# characters, line/paragraph separators). Pure data tables, no I/O.
+unicode-properties = "0.1.4"
 
 [lints]
 workspace = true

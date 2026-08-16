@@ -6,6 +6,9 @@ members = [
     "crates/provider",
     "crates/server",
 ]
+# The fuzz harness is its own workspace (cargo-fuzz convention) so its
+# libFuzzer tooling stays outside the production dependency policy.
+exclude = ["fuzz"]
 
 [workspace.package]
 version = "0.0.1"
