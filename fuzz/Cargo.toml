@@ -1,0 +1,36 @@
+[package]
+name = "cardano-mcp-fuzz"
+version = "0.0.0"
+edition = "2024"
+publish = false
+
+[package.metadata]
+cargo-fuzz = true
+
+[dependencies]
+libfuzzer-sys = "0.4"
+cardano-mcp-decode = { path = "../crates/decode" }
+cardano-mcp-sanitize = { path = "../crates/sanitize" }
+
+[[bin]]
+name = "parse_unit"
+path = "fuzz_targets/parse_unit.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "classify"
+path = "fuzz_targets/classify.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "sanitize_bytes"
+path = "fuzz_targets/sanitize_bytes.rs"
+test = false
+doc = false
+bench = false
+
+[workspace]

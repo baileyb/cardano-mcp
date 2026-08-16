@@ -56,10 +56,14 @@ step "vale (prose, error level = CI gate)"
 vale --minAlertLevel=error ./*.md
 
 step "markdownlint (explicit dot-dir globs: CI scans them, local defaults skip them)"
-npx --yes markdownlint-cli2 "**/*.md" ".claude/**/*.md" ".github/**/*.md"
+# Exclude target/: a local `cargo doc` run drops rustdoc's own .md license
+# files there; CI never builds docs, so it never sees them.
+npx --yes markdownlint-cli2 "**/*.md" ".claude/**/*.md" ".github/**/*.md" "!**/target/**"
 
 step "lychee (links)"
-lychee --no-progress --include-fragments "**/*.md"
+# Exclude target/: a local `cargo doc` run drops rustdoc's own license .md
+# files there (which link to third-party font sites); CI never builds docs.
+lychee --no-progress --include-fragments --exclude-path target "**/*.md"
 
 step "typos"
 typos

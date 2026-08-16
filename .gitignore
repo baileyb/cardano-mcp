@@ -4,3 +4,7 @@ CLAUDE.local.md
 .env
 # Build
 /target
+# Fuzzing byproducts (generated corpus, crash artifacts, build output)
+fuzz/corpus/
+fuzz/artifacts/
+fuzz/target/
