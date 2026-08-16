@@ -385,4 +385,34 @@ mod tests {
         let info = provider.address_info("addr1xyz").await.unwrap();
         assert!(info.amount.is_empty());
     }
+
+    #[tokio::test]
+    async fn transport_error_display_leaks_no_url() {
+        // A connection failure must not surface the configured base URL or
+        // request path (which reqwest's own Display would append), since
+        // this string may reach an MCP client / model.
+        let provider = Blockfrost::new("http://127.0.0.1:1/secret-internal-host", None).unwrap();
+        let err = provider.address_info("addr1xyz").await.unwrap_err();
+        assert!(matches!(err, ProviderError::Transport(_)));
+        let shown = err.to_string();
+        assert!(!shown.contains("http"), "leaked url: {shown}");
+        assert!(!shown.contains("127.0.0.1"), "leaked host: {shown}");
+        assert!(
+            !shown.contains("secret-internal-host"),
+            "leaked path: {shown}"
+        );
+    }
+
+    #[test]
+    fn construction_error_display_leaks_no_url() {
+        // The Construction variant redacts the same way as Transport: its
+        // Display is a fixed string, never the wrapped reqwest error.
+        let reqwest_err = reqwest::Client::new()
+            .get("http://[not-a-valid-host/secret")
+            .build()
+            .unwrap_err();
+        let err = ProviderError::Construction(reqwest_err);
+        // The fixed Display (no `{0}`) cannot contain the wrapped error.
+        assert_eq!(err.to_string(), "provider client construction failed");
+    }
 }

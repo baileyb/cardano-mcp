@@ -6,6 +6,14 @@ use pallas_addresses::{
     Address, ByronAddress, Network, ShelleyDelegationPart, ShelleyPaymentPart, StakePayload,
 };
 
+/// Ceiling on address-string length. The longest canonical Cardano
+/// addresses are Byron Daedalus addresses at ~104 characters (Shelley
+/// bech32 addresses are ~103); a much larger input is not an address and
+/// must not reach the base58 decoder, whose cost is superlinear in input
+/// length (`THREAT_MODEL.md` F2: bounded work on untrusted input). 128
+/// leaves margin above the longest real address.
+const MAX_ADDRESS_LEN: usize = 128;
+
 /// Which network an address belongs to.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum NetworkKind {
@@ -75,6 +83,9 @@ fn network_kind(network: Network) -> NetworkKind {
 /// Returns [`DecodeError::UnrecognizedAddress`] when the input parses as
 /// neither, or parses but is not its own canonical encoding.
 pub fn classify(input: &str) -> Result<AddressReport, DecodeError> {
+    if input.len() > MAX_ADDRESS_LEN {
+        return Err(DecodeError::UnrecognizedAddress);
+    }
     if let Ok(address) = Address::from_bech32(input)
         && address.to_bech32().ok().as_deref() == Some(input)
     {
@@ -161,6 +172,8 @@ mod tests {
     const MAINNET_ENTERPRISE: &str = "addr1vx2fxv2umyhttkxyxp8x0dlpdt3k6cwng5pxj3jhsydzers66hrl8";
     // Byron base58 vector (from pallas-addresses' own test corpus).
     const BYRON: &str = "Ae2tdPwUPEZLs4HtbuNey7tK4hTKrwNwYtGqp7bDfCy2WdR3P6735W5Yfpe";
+    // Byron Daedalus address (~104 chars) — the longest canonical shape.
+    const BYRON_DAEDALUS: &str = "DdzFFzCqrht7PQiAhzrn6rNNoADJieTWBt8KeK9BZdUsGyX9ooYD9NpMCTGjQoUKcHN47g8JMXhvKogsGpQHtiQ65fZwiypjrC6d3a4Q";
     // Type-4 pointer address (payment key + pointer delegation), CIP-19.
     const MAINNET_POINTER: &str =
         "addr1gx2fxv2umyhttkxyxp8x0dlpdt3k6cwng5pxj3jhsydzer5pnz75xxcrzqf96k";
@@ -286,6 +299,25 @@ mod tests {
     #[test]
     fn rejects_garbage() {
         assert!(classify("not-an-address").is_err());
+    }
+
+    #[test]
+    fn length_cap_admits_every_real_address_shape() {
+        // The cap is a work-bound on pathological input; it cannot be pinned
+        // by an outcome assertion (an over-length string is not an address
+        // regardless of the cap). What a test *can* pin is that the cap sits
+        // above the longest legitimate address, so no real input is rejected
+        // — a guard against the cap being tightened too far. Byron Daedalus
+        // is the longest canonical shape.
+        for addr in [MAINNET_PAYMENT, TESTNET_PAYMENT, BYRON, BYRON_DAEDALUS] {
+            assert!(addr.len() <= MAX_ADDRESS_LEN, "{addr} exceeds the cap");
+            assert!(classify(addr).is_ok(), "{addr} did not classify");
+        }
+        // An over-length input is rejected (as any non-address is).
+        assert_eq!(
+            classify(&"a".repeat(MAX_ADDRESS_LEN + 1)),
+            Err(DecodeError::UnrecognizedAddress)
+        );
     }
 
     #[test]

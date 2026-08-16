@@ -49,7 +49,8 @@ updated then.
 - Secret exposure: the provider API key appearing in logs, errors, or tool
   output.
 - Transport security gaps in the HTTP mode (missing Origin/Host validation,
-  auth bypass).
+  auth bypass) — for the planned streamable-HTTP transport; the current
+  server is stdio-only.
 - Supply-chain issues in our release pipeline or published artifacts.
 
 **Out of scope:**

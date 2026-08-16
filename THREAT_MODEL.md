@@ -10,9 +10,10 @@ important — what it explicitly does not defend against. It complements
 
 `cardano-mcp` is a read-only MCP server: it fetches Cardano chain data from a
 Blockfrost-compatible provider, decodes it (Pallas/CBOR), and returns
-sanitized, human-readable answers to MCP clients over stdio (local) or
-streamable HTTP (self-hosted). The default build holds no keys and cannot
-sign, spend, or write anything anywhere.
+sanitized, human-readable answers to MCP clients over stdio (the current
+transport; a streamable-HTTP transport for self-hosting is planned, see F4).
+The default build holds no keys and cannot sign, spend, or write anything
+anywhere.
 
 ## Position in the "lethal trifecta"
 
@@ -97,10 +98,10 @@ flow straight into an LLM's context via any naive decoder:
   responses carry the policy ID and CIP-14 fingerprint alongside any
   human-readable name, with the name explicitly labeled as unverified
   attacker-writable data.
-- **Structured output** (Planned, lands with the MCP transport): tools
-  return typed `structuredContent` with strict schemas rather than
-  free-text blobs, so hosts can post-process and pass minimal fields to
-  the model.
+- **Structured output** (Planned): tools will return typed
+  `structuredContent` with strict schemas rather than free-text blobs, so
+  hosts can post-process and pass minimal fields to the model. The current
+  stdio server returns sanitized, delimited text.
 - Per-field length caps and a per-response size budget (context flooding is
   an attack).
 
@@ -171,23 +172,20 @@ misuse.
 
 **Defenses:**
 
-- stdio is the default transport; it exposes no network surface.
-- rmcp **≥ 1.4.0** required (Host-header validation / rebinding fix).
-- **Origin validation** on all HTTP requests with 403 on mismatch — the
-  current MCP spec makes this a MUST; where the SDK does not yet enforce
-  it, this server does so itself in middleware. Strict CORS allowlist,
-  never `*`.
-- Default bind is `127.0.0.1`; binding wider requires explicit
-  configuration and is documented as requiring a fronting proxy with TLS
-  and authentication.
-- Sessions are never used for authentication; the targeted protocol
-  revision (2026-07-28) removes sessions entirely, and older-revision
-  session IDs are ignored rather than honored.
-- Bearer/API-token authentication for any network-exposed deployment;
-  tokens are audience-specific — no token passthrough.
+- **stdio is the only transport today.** It exposes no network surface, so
+  the DNS-rebinding, session-hijacking, header-desync, and origin attacks
+  above do not apply to the current server. It is the default and the
+  quickstart path.
+- rmcp 3.x is used, which implements the sessionless 2026-07-28 transport
+  revision (no session IDs to hijack); the DNS-rebinding advisory
+  (CVE-2026-42559, GHSA-89vp-x53w-74fx) affected the older 1.x line, not
+  this one.
 - Error hygiene: no stack traces, paths, or configuration in responses.
-- Request-level resource limits: concurrency caps, timeouts, response size
-  budgets.
+- **Planned** — with the streamable-HTTP transport for network-exposed
+  self-hosting: Origin and Host validation (403 on mismatch), default bind
+  to `127.0.0.1`, a strict CORS allowlist (never `*`), bearer-token auth
+  with no token passthrough, and request-level resource limits. Until that
+  lands, the server must not be exposed over a network.
 
 ### F5. Provider trust (the data can lie)
 

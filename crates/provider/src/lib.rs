@@ -51,9 +51,14 @@ pub struct AccountInfo {
     pub controlled_amount: String,
 }
 
-/// Errors surfaced by providers. Response bodies are never embedded in
-/// errors: provider output is untrusted and must not leak into error text
-/// unsanitized.
+/// Errors surfaced by providers.
+///
+/// `Display` never embeds a response body, a URL, or the configured base
+/// URL: these errors may be shown to an MCP client / model, and a
+/// `reqwest::Error`'s own `Display` would otherwise append the request URL
+/// (disclosing internal topology for a self-hosted deployment). The
+/// underlying `reqwest::Error` is retained as `#[source]` for local error
+/// chains (CLI / logging), which do not cross that boundary.
 #[derive(Debug, thiserror::Error)]
 pub enum ProviderError {
     /// The requested entity does not exist on-chain (HTTP 404).
@@ -78,10 +83,10 @@ pub enum ProviderError {
     #[error("unsafe reference rejected before request")]
     InvalidReference,
     /// Transport-level failure (connection, TLS, timeout).
-    #[error("transport failure: {0}")]
+    #[error("transport failure")]
     Transport(#[source] reqwest::Error),
     /// The provider client could not be constructed.
-    #[error("provider client construction failed: {0}")]
+    #[error("provider client construction failed")]
     Construction(#[source] reqwest::Error),
 }
 
@@ -89,9 +94,12 @@ pub enum ProviderError {
 /// need — it is deliberately not a general Cardano client.
 #[allow(
     async_fn_in_trait,
-    reason = "consumed generically within this workspace on a single-threaded \
-              runtime; Send bounds will be added when a work-stealing runtime \
-              requires them"
+    reason = "the server runs on a multi-thread runtime and consumes the \
+              concrete Blockfrost impl, whose futures are Send; an explicit \
+              `+ Send` bound would be needed only if the provider were \
+              consumed generically or dynamically across a spawn point (e.g. \
+              `Box<dyn ChainProvider>`), and adding it would then require \
+              every impl to be Send"
 )]
 pub trait ChainProvider {
     /// Fetch current holdings and staking association for an address.

@@ -54,8 +54,8 @@ flowchart LR
         BF[Blockfrost hosted API]
         DL[Dolos data node self-hosted]
     end
-    A -- "MCP (stdio / HTTP)" --> server
-    B -- MCP --> server
+    A -- "MCP (stdio)" --> server
+    B -- "MCP (stdio)" --> server
     P --> BF
     P --> DL
     DL --> NET[Cardano relays]
@@ -145,8 +145,8 @@ endpoint gaps get compatibility shims inside the provider, never in tools.
 
 ## Security model
 
-Threat model summary (full `SECURITY.md` and threat-model document are the
-next planned additions to this repo):
+Threat model summary (see [SECURITY.md](SECURITY.md) and
+[THREAT_MODEL.md](THREAT_MODEL.md) for the full treatment):
 
 - **Assets:** the provider API key (Tier 1); signing keys exist only in
   Tier 2 builds and never in this repo's default artifact.
@@ -168,10 +168,12 @@ next planned additions to this repo):
 ## Deployment shapes
 
 - **Laptop:** the binary + a free Blockfrost key, MCP over stdio. This is the
-  five-minute quickstart and must stay that easy.
-- **Self-hosted:** container (distroless, non-root, read-only rootfs) behind
-  MCP streamable HTTP, next to a Dolos data node. Reference Helm chart ships
-  in-repo; no external dependency remains in the request path.
+  quickstart and the current transport; it must stay that easy.
+- **Self-hosted (Planned):** a container (distroless, non-root, read-only
+  rootfs) exposing the planned MCP streamable-HTTP transport, next to a Dolos
+  data node, with a reference Helm chart. This needs the transport hardening
+  in THREAT_MODEL.md F4 (Origin/Host validation, auth) before it ships; until
+  then the server runs over stdio only.
 - The server is stateless (caches are warm-only); scale-out and restarts are
   trivial by construction.
 
