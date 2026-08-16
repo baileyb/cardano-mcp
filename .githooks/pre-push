@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Enabled via: git config core.hooksPath .githooks
+# Bypass for emergencies only: git push --no-verify
+exec "$(git rev-parse --show-toplevel)/scripts/preflight.sh"

@@ -27,6 +27,18 @@ and the machines will mostly stay out of your way.
    [SECURITY.md](SECURITY.md).
 6. Be someone worth collaborating with: [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
 
+## Local checks before you push
+
+`scripts/preflight.sh` runs every CI check locally — if it passes, CI
+passes. Enable it as a pre-push hook once per clone:
+
+```sh
+git config core.hooksPath .githooks
+```
+
+The script names any missing tool and its install command. Bypassing with
+`git push --no-verify` is for emergencies; CI will still hold the line.
+
 ## Practical notes
 
 - Small, focused pull requests review faster than large ones.
