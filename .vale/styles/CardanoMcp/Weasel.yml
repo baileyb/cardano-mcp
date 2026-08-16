@@ -1,0 +1,13 @@
+extends: existence
+message: "Weasel word '%s' — assert it, qualify it precisely, or cut it."
+level: error
+ignorecase: true
+tokens:
+  - simply
+  - easily
+  - obviously
+  - clearly
+  - of course
+  - needless to say
+  - as everyone knows
+  - it goes without saying

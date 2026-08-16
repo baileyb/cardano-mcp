@@ -1,0 +1,56 @@
+name: docs
+
+on:
+  push:
+    branches: [main]
+    paths: ["**.md", ".vale/**", ".vale.ini", ".markdownlint.yaml", ".github/workflows/docs.yml"]
+  pull_request:
+    paths: ["**.md", ".vale/**", ".vale.ini", ".markdownlint.yaml", ".github/workflows/docs.yml"]
+
+permissions: {}
+
+jobs:
+  prose:
+    name: prose lint (vale)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: errata-ai/vale-action@518a9136acc6e6668ce7c00d367051e0941e87ff # v3.0.0
+        with:
+          fail_on_error: true
+          filter_mode: nofilter
+          vale_flags: "--minAlertLevel=error"
+
+  mechanics:
+    name: markdown mechanics
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: DavidAnson/markdownlint-cli2-action@21c1be1b93ad9ed58fa840aacc3f279cde2a72ff # v24.2.0
+        with:
+          globs: "**/*.md"
+
+  links:
+    name: link check
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
+        with:
+          args: --no-progress --include-fragments "**/*.md"
+          fail: true
+
+  spelling:
+    name: spelling
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: crate-ci/typos@8a48f81b6c64dcfea44b3633223084c4be58ac5f # v1.49.0

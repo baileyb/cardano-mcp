@@ -1,0 +1,9 @@
+# Mechanics only — prose quality is Vale's job (.vale/styles/).
+default: true
+# Line length: not enforced; wrapped prose is an editor concern.
+MD013: false
+# Inline HTML: allowed (tables, anchors).
+MD033: false
+# Duplicate sibling headings allowed (e.g. repeated "The attack" pattern).
+MD024:
+  siblings_only: true

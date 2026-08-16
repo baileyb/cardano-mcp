@@ -1,0 +1,23 @@
+extends: existence
+message: "Marketing adjective '%s' — show the number or cut the claim."
+level: error
+ignorecase: true
+tokens:
+  - robust
+  - powerful
+  - seamless(?:ly)?
+  - comprehensive(?:ly)?
+  - cutting-edge
+  - blazing(?:ly)?(?:[ -]fast)?
+  - state-of-the-art
+  - world-class
+  - best-in-class
+  - revolutionary
+  - game-changing
+  - innovative
+  - effortless(?:ly)?
+  - intuitive(?:ly)?
+  - enterprise-grade
+  - battle-tested
+  - production-grade
+  - lightning[ -]fast

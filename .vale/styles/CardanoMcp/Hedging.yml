@@ -1,0 +1,13 @@
+extends: existence
+message: "Filler '%s' — the sentence is stronger without it."
+level: warning
+ignorecase: true
+tokens:
+  - very
+  - quite
+  - basically
+  - essentially
+  - actually
+  - in order to
+  - it should be noted
+  - it is important to note

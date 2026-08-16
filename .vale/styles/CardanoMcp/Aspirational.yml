@@ -1,0 +1,10 @@
+extends: existence
+message: "'%s' describes intent, not the artifact — mark it 'Planned:' or move it to an issue."
+level: warning
+ignorecase: true
+tokens:
+  - will eventually
+  - we hope to
+  - in the future we
+  - coming soon
+  - stay tuned
